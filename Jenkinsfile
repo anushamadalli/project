@@ -1,72 +1,70 @@
-pipeline 
-{
+pipeline {
     agent any
 
-    tools 
-    {
-        maven 'Maven'
+    tools{
+        maven 'maven'
     }
 
-    stages 
-    {
-        stage('Build') 
-        {
-            steps L:
-            {
+    stages{
+        stage('Check and remove container'){
+            steps{
+                script{
+                    def containerExists = sh(script: "docker ps -q -f name=anusha", returnStdout: true).trim()
+                    if (containerExists) {
+                    sh 'docker stop anusha'
+                    sh 'docker rm anusha'
+                    }
+                }
+            }
+        }
+        stage('Build package'){
+            steps{
                 sh 'mvn clean package'
             }
         }
-
-        stage('Build Docker Image') 
-        {
-            steps L:
-            {
+        stage('Create image'){
+            steps{
                 sh 'sudo docker build -t app /var/lib/jenkins/workspace/demo/'
             }
         }
 
-        stage('Push to Docker Hub') 
-        {
-            steps L:
-             {
-               sh 'echo "newanusha@123" | docker login -u "anushamadalli" --password-stdin'
-                sh 'docker push anushamadalli/app2'
-             }
-        }
-    }
-
-        stage('Remove Local Docker Image') 
-    {
-        {
-            steps L:
-            {
-                sh 'docker rmi -f anushamadalli/app2'
+        stage('Assign tags'){
+            steps{
+                sh 'docker tag app anushamadalli/app2'
             }
         }
-
-        stage('Run Docker Container') 
-        {
-            steps L: 
-            {
+        stage('Push to dockerhub'){
+            steps{
+                sh 'echo "newanusha@123" | docker login -u "anushamadalli" --password-stdin'
+                sh 'docker push anushamadalli/app2'
+            }
+        }
+        stage('Remove images'){
+            steps{
+                sh 'docker rmi -f $(docker images -q)'
+            }
+        }
+        stage('Pull image from DockerHub'){
+            steps{
+                sh 'docker pull anushamadalli/app2'
+            }
+        }
+        stage('Run a container'){
+            steps{
                 sh 'docker run -it -d --name anusha -p 8081:8080 anushamadalli/app2'
             }
         }
     }
-
-    post 
-    {
-        always 
-        {
-            echo 'Deployment completed!'
+    post {
+        success {
+            echo 'Deployment successful'
         }
-        success 
-        {
-            echo 'Pipeline succeeded!'
+        failure {
+            sh 'docker rm -f anusha'
         }
-        failure 
-        {
-            echo 'Pipeline failed!'
-            sh 'docker container prune -f'
+        always{
+            echo 'Deployed'
         }
     }
+
 }

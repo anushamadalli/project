@@ -24,9 +24,10 @@ pipeline {
         }
         stage('Create image'){
             steps{
-                  sh 'sudo docker build -t app /var/lib/jenkins/workspace/demo/'
+                sh 'sudo docker build -t app /var/lib/jenkins/workspace/demo/'
             }
         }
+
         stage('Assign tag'){
             steps{
                 sh 'docker tag app anushamadalli/app2'

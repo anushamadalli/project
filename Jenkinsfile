@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'maven'
+        maven 'Maven'
     }
 
     stages {
@@ -20,23 +20,21 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                withCredentials([string(credentialsId: 'newanusha@123', variable: 'DOCKER_PASSWORD')]) {
-                    sh 'echo $DOCKER_PASSWORD | docker login --username anushamadalli --password-stdin'
-                    sh 'docker tag app anushamadalli/app2'
-                    sh 'docker push anushamadalli/app2'
+               sh 'echo "newanusha@123" | docker login -u "anushamadalli" --password-stdin'
+                sh 'docker push anushamadalli/app2'
                 }
             }
         }
 
         stage('Remove Local Docker Image') {
             steps {
-                sh 'docker rmi anushamadalli/app2'
+                sh 'docker rmi -f anushamadalli/app2'
             }
         }
 
         stage('Run Docker Container') {
             steps {
-                sh 'docker run -d -p 8081:8080 anushamadalli/app2'
+                sh 'docker run -it -d --name anusha -p 8081:8080 anushamadalli/app2'
             }
         }
     }

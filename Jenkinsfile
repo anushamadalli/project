@@ -35,7 +35,7 @@ pipeline {
         }
         stage('Push to dockerhub'){
             steps{
-                sh 'echo "docker#123" | docker login -u "anushamadalli" --password-stdin'
+                sh 'echo "newanusha@123" | docker login -u "anushamadalli" --password-stdin'
                 sh 'docker push anushamadalli/app2'
             }
         }

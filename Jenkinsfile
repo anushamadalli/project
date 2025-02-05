@@ -11,7 +11,7 @@ pipeline
     {
         stage('Build') 
         {
-            steps 
+            steps L:
             {
                 sh 'mvn clean package'
             }
@@ -19,7 +19,7 @@ pipeline
 
         stage('Build Docker Image') 
         {
-            steps 
+            steps L:
             {
                 sh 'sudo docker build -t app /var/lib/jenkins/workspace/demo/'
             }
@@ -38,7 +38,7 @@ pipeline
         stage('Remove Local Docker Image') 
     {
         {
-            steps 
+            steps L:
             {
                 sh 'docker rmi -f anushamadalli/app2'
             }
@@ -46,7 +46,7 @@ pipeline
 
         stage('Run Docker Container') 
         {
-            steps 
+            steps L: 
             {
                 sh 'docker run -it -d --name anusha -p 8081:8080 anushamadalli/app2'
             }

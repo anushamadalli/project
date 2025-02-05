@@ -27,10 +27,12 @@ pipeline
 
         stage('Push to Docker Hub') 
         {
-            steps 
-            {
+            steps {it->
+            
+             {
                sh 'echo "newanusha@123" | docker login -u "anushamadalli" --password-stdin'
                 sh 'docker push anushamadalli/app2'
+                }
             }
         }
     }

@@ -36,6 +36,7 @@ pipeline
     }
 
         stage('Remove Local Docker Image') 
+    {
         {
             steps 
             {
@@ -52,7 +53,8 @@ pipeline
         }
     }
 
-    post {
+    post 
+    {
         always 
         {
             echo 'Deployment completed!'

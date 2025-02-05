@@ -28,7 +28,7 @@ pipeline {
             }
         }
 
-        stage('Assign tag'){
+        stage('Assign tags'){
             steps{
                 sh 'docker tag app anushamadalli/app2'
             }
